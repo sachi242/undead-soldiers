@@ -4,3 +4,5 @@ Thumbs.db
 *.log
 .env
 .env.*
+# Downloaded FBX working sources; the game ships the baked animated glTF.
+assets/animations/mixamo/*.fbx

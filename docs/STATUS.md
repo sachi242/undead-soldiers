@@ -7,6 +7,7 @@ Updated: 2026-11-05
 - Solo training spawns exactly one articulated soldier. Its AI strafes, reacts to aim and nearby shots, routes around obstacles, seeks cover while reloading, and changes movement with limb loss. Both player and bot have a five-second regeneration event.
 - Rifle/SMG switching, held fire, tracers, impact sparks/marks, mouse capture with fallback, and a Windows batch launcher are implemented on the feature branch. Gameplay testing of these latest changes is pending user testing.
 - Design document: "Undead Soliders.txt". Prototype is not the completed design.
+- Supplied Soldier_01 geometry and SgtFrag texture now replace procedural bodies after loading. Twelve Mixamo clips are retargeted and wired to bot, remote, and third-person state, with independent skeletons and detachable skinned regions. See docs/CHARACTER.md; custom wall-run/hop/stomp animation polish remains.
 - Two-player peer-to-peer PIN duels are implemented on the multiplayer feature branch, with solo bots preserved. This is casual client-trusted networking; no relay or host migration is configured.
 - First/third-person switching, ADS, limb-dependent wall running/jumping, slide cancellation, armor-before-limb rules, recoil changes, relic bearing/reachability, and guarded finisher prompts are implemented on the feature branch. Latest gameplay validation remains pending. See docs/DESIGN-AUDIT.md for design coverage and explicit limitations.
 - Final art/audio, polished animations, relay/anti-cheat infrastructure, and full balancing remain unfinished.

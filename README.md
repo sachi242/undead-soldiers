@@ -4,6 +4,8 @@ A playable browser-based 3D arena combat prototype based on `Undead Soliders.txt
 
 ## Play locally
 
+The supplied Soldier_01 model now loads with its texture and retargeted Mixamo animations for the bot and third-person body. Restart the launcher after updating, then hard-refresh the page so it serves the new model assets. Details and remaining animation limitations are in [the character integration guide](docs/CHARACTER.md).
+
 Design update controls: **V** switches first/third person; **right-click** aims down sights; **Space** jumps, sustains a wall run near a wall, and kicks off on a new press; **C** starts/cancels sliding; **E** executes a nearby limbless enemy when prompted. Armor now breaks before the targeted limb severs. See [the design audit](docs/DESIGN-AUDIT.md) for implementation choices and remaining gaps.
 
 On Windows, double-click **Play Undead Soldiers.bat**. It requires Node.js, starts a local-only server, and opens the browser. Keep its console window open while playing. It tries another port automatically if 8080 is already occupied.

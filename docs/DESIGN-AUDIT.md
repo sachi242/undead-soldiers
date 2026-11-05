@@ -22,7 +22,7 @@ Compared with `Undead Soliders.txt` on 2026-11-05. “Implemented” means code 
 ## Still requires validation or production work
 - User gameplay testing: wall runs/jumps, camera aiming/clipping, collision edges, ADS, armor balance, finishers, and tombstone timing.
 - Cross-computer/network multiplayer testing of the latest mechanics; both players must use the same branch/version.
-- Final character assets, audio, polished movement/finisher animations, and final balancing. Models are procedural articulated placeholders.
+- Audio, polished movement/finisher animations, and final balancing. The supplied textured Soldier_01 model now has retargeted Mixamo clips; procedural models remain a load-failure fallback. See CHARACTER.md.
 - Cover seeking is grid based. A complete physics controller, anti-cheat authority, relay infrastructure, or larger player count is not provided.
 
 Code verification uses pure rules tests, bot decision/navigation tests, actual Three.js model checks, and a headless game lifecycle. No computer-use gameplay testing is performed for this audit, per the user's preference.

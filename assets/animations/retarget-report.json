@@ -1,0 +1,94 @@
+{
+  "mapping": {
+    "Hips": "Hips",
+    "Torso": "Spine2",
+    "Neck": "Neck",
+    "Head": "Head",
+    "L_Shoulder": "LeftArm",
+    "L_Arm_Lower": "LeftForeArm",
+    "L_Hand": "LeftHand",
+    "R_Shoulder": "RightArm",
+    "R_Arm_Lower": "RightForeArm",
+    "R_Hand": "RightHand",
+    "L_Thigh": "LeftUpLeg",
+    "L_Leg_Lower": "LeftLeg",
+    "L_Foot": "LeftFoot",
+    "R_Thigh": "RightUpLeg",
+    "R_Leg_Lower": "RightLeg",
+    "R_Foot": "RightFoot"
+  },
+  "clips": [
+    {
+      "name": "mixamo_idle",
+      "source": "Rifle Aiming Idle.fbx",
+      "frames": 94,
+      "duration": 3.099998904632568
+    },
+    {
+      "name": "mixamo_run",
+      "source": "Rifle Run.fbx",
+      "frames": 24,
+      "duration": 0.7333323492279052
+    },
+    {
+      "name": "mixamo_fire",
+      "source": "Firing Rifle.fbx",
+      "frames": 10,
+      "duration": 0.26666568057441714
+    },
+    {
+      "name": "mixamo_strafe",
+      "source": "Rifle Side Step.fbx",
+      "frames": 36,
+      "duration": 1.166665626930237
+    },
+    {
+      "name": "mixamo_crouch",
+      "source": "Rifle Crouch Walk.fbx",
+      "frames": 61,
+      "duration": 1.9666656984558106
+    },
+    {
+      "name": "mixamo_reload",
+      "source": "Reloading.fbx",
+      "frames": 100,
+      "duration": 3.299998952316284
+    },
+    {
+      "name": "mixamo_proneReload",
+      "source": "Prone Reloading.fbx",
+      "frames": 194,
+      "duration": 6.3999990953674315
+    },
+    {
+      "name": "mixamo_crawl",
+      "source": "Prone Forward.fbx",
+      "frames": 71,
+      "duration": 2.3333322538604735
+    },
+    {
+      "name": "mixamo_lowCrawl",
+      "source": "Low Crawl.fbx",
+      "frames": 71,
+      "duration": 2.3333322538604735
+    },
+    {
+      "name": "mixamo_jump",
+      "source": "Jump.fbx",
+      "frames": 84,
+      "duration": 2.7666656507720946
+    },
+    {
+      "name": "mixamo_land",
+      "source": "Jumping Down.fbx",
+      "frames": 90,
+      "duration": 2.933332396911621
+    },
+    {
+      "name": "mixamo_death",
+      "source": "Rifle Death.fbx",
+      "frames": 115,
+      "duration": 3.799998952316284
+    }
+  ]
+}

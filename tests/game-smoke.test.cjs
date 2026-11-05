@@ -2,21 +2,26 @@ const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs'),vm=require('node:vm'),Three=require('three');
 const {BotBrain,ArenaNavigator}=require('../bot-ai.js'),buildSoldier=require('../soldier.js');
-test('game initializes one bot and runs movement, weapon and limb lifecycles without a browser',()=>{
+test('game initializes one animated bot and runs movement, weapon and limb lifecycles without a browser',async()=>{
   const elements=new Map();
   function element(key){if(!elements.has(key))elements.set(key,{textContent:'',hidden:false,disabled:false,value:'',clientWidth:900,clientHeight:480,isConnected:true,classList:{add(){},remove(){},toggle(){}},appendChild(){},focus(){},matches(){return true;},contains(){return false;},closest(){return null;},addEventListener(){}});return elements.get(key);}
   const root=element('root');root.querySelector=element;
   class Renderer{constructor(){this.shadowMap={};this.domElement=element('canvas');}setPixelRatio(){}setSize(){}render(scene){scene.updateMatrixWorld(true);}dispose(){}}
   let frame;
-  const context={THREE:{...Three,WebGLRenderer:Renderer},BotBrain,ArenaNavigator,buildSoldier,GameRules:require('../game-rules.js'),
+  const {T,loadCharacter}=require('./load-character.cjs'),character=await loadCharacter();
+  const context={THREE:{...T,WebGLRenderer:Renderer},BotBrain,ArenaNavigator,buildSoldier,GameRules:require('../game-rules.js'),
     PinRoom:class{constructor(){this.role=null;}send(){}},
     document:{getElementById:()=>root,addEventListener(){},pointerLockElement:null,activeElement:null},
     devicePixelRatio:1,ResizeObserver:class{constructor(fn){this.fn=fn;}observe(){this.fn();}disconnect(){}},
     performance:{now:()=>0},requestAnimationFrame:fn=>frame=fn,setTimeout:()=>0,clearTimeout(){},console,addEventListener(){}};
   context.window=context;vm.createContext(context);
+  vm.runInContext(fs.readFileSync(require.resolve('../animated-soldier.js'),'utf8'),context);
+  context.SoldierVisuals.setTemplate(character.scene,character.animations);
   const html=fs.readFileSync(require.resolve('../index.html'),'utf8'),script=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(m=>m[1]).find(s=>s.includes('const root='));
   vm.runInContext(script.replace(/\}\)\(\);\s*$/,`globalThis.testGame={bots,fire,detach,restoreBot,switchWeapon,doReload,reset,impact,switchView,playerHit,finishable,updateVertical,keys,getState:()=>({arms,legs,helmet,parts:{...localParts},armor:{...localArmor},rush,wallActive,groundY}),setPosition:(x,y,z)=>{player.set(x,0,z);groundY=y;velocity=0;},getRelic:()=>relic,getAmmo:()=>ammo,getWeapon:()=>weaponIndex,getEffects:()=>effects.length};})();`),context);
   const game=context.testGame;assert.equal(game.bots.length,1);
+  await game.bots[0].assetReady;
+  assert.ok(game.bots[0].parts.leftLeg.children[0].isSkinnedMesh);
   element('.enter').onclick();
   // Keep player alive while exercising the bot's full regeneration timer.
   const decide=game.bots[0].brain.update.bind(game.bots[0].brain);
