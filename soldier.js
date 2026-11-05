@@ -37,7 +37,8 @@
       group.position.y=baseY+(legs===0?(arms===0?-1.02:-.8):legs===1&&moving?Math.abs(Math.sin(phase))*.16:0);
       weapon.rotation.x=reloading?-.7:0;
     }
-    return {group,parts,joints,weapon,aura,pose};
+    function setArmor(state){for(const name of ['leftArm','rightArm','leftLeg','rightLeg']){const plate=parts[name].children.find(m=>m.isMesh&&m.geometry.type==='BoxGeometry');if(plate)plate.material=state[name]?mats.metal:material;}}
+    return {group,parts,joints,weapon,aura,pose,setArmor};
   };
   if(typeof module!=='undefined')module.exports=scope.buildSoldier;
 })(typeof window!=='undefined'?window:globalThis);

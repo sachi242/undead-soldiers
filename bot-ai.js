@@ -1,5 +1,6 @@
 (function(scope){
   'use strict';
+  const rules=scope.GameRules||(typeof require!=='undefined'?require('./game-rules.js'):null);
   // Navigation and decisions are independent of rendering for deterministic checks.
   class ArenaNavigator {
     constructor(walkable,step=1.5){this.walkable=walkable;this.step=step;this.limit=18;}
@@ -30,8 +31,8 @@
     update(dt,p){
       for(const k of ['cooldown','dodgeCooldown','threat'])this[k]=Math.max(0,this[k]-dt);
       let fire=false;
-      if(p.limbs===0){this.state='TOMBSTONE RUSH';return {state:this.state,speed:5.8,fire:false,mode:'relic'};}
-      const mobility=p.legs===0?.48:p.legs===1?1.3:p.arms===0?4.3:p.arms===1?3.7:3.4;
+      if(p.limbs===0){this.state='TOMBSTONE RUSH';return {state:this.state,speed:rules.movement(0,0,3.4).speed,fire:false,mode:'relic'};}
+      const mobility=rules.movement(p.arms,p.legs,3.4).speed;
       if(this.reload>0){this.reload=Math.max(0,this.reload-dt);this.state='RELOAD';if(this.reload===0)this.ammo=8;return {state:this.state,speed:mobility,fire:false,mode:'cover'};}
       if(this.ammo===0){this.reload=p.arms===0?2.6:1.8;this.state='RELOAD';return {state:this.state,speed:mobility,fire:false,mode:'cover'};}
       this.aimTime=p.visible?this.aimTime+dt:0;

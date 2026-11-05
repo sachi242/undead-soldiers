@@ -19,7 +19,7 @@ test('aim threat causes dodge with cooldown; legless bot cannot dodge',()=>{
 });
 test('limbless bot prioritizes regeneration over reload or shooting',()=>{
   const b=new BotBrain();b.ammo=0;b.reload=1;
-  assert.deepEqual(b.update(.1,{...perception,arms:0,legs:0,limbs:0}),{state:'TOMBSTONE RUSH',speed:5.8,fire:false,mode:'relic'});
+  assert.deepEqual(b.update(.1,{...perception,arms:0,legs:0,limbs:0}),{state:'TOMBSTONE RUSH',speed:require('../game-rules.js').movement(0,0,3.4).speed,fire:false,mode:'relic'});
 });
 test('navigation routes around walls rather than through them',()=>{
   const pass=(x,z)=>!(Math.abs(x)<.7&&Math.abs(z)<3),n=new ArenaNavigator(pass,1.5);

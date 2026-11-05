@@ -4,6 +4,8 @@ A playable browser-based 3D arena combat prototype based on `Undead Soliders.txt
 
 ## Play locally
 
+Design update controls: **V** switches first/third person; **right-click** aims down sights; **Space** jumps, sustains a wall run near a wall, and kicks off on a new press; **C** starts/cancels sliding; **E** executes a nearby limbless enemy when prompted. Armor now breaks before the targeted limb severs. See [the design audit](docs/DESIGN-AUDIT.md) for implementation choices and remaining gaps.
+
 On Windows, double-click **Play Undead Soldiers.bat**. It requires Node.js, starts a local-only server, and opens the browser. Keep its console window open while playing. It tries another port automatically if 8080 is already occupied.
 
 Solo practice spawns exactly one adaptive training soldier with jointed, detachable limbs. The bot strafes, dodges aim/fire threats, navigates around cover, and reloads an eight-round magazine. Its live state and ammo appear below the arena. Use **Q** or **Switch weapon** for rifle/SMG; hold left-click to fire. Shots create tracers, sparks, and short-lived marks on cover. Entering requests mouse capture; **Enable mouse** retries, and Escape releases it.

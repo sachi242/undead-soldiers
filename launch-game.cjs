@@ -4,7 +4,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const {spawn}=require('node:child_process');
 const root=__dirname;
-const assets=new Set(['index.html','room.js','bot-ai.js','soldier.js']);
+const assets=new Set(['index.html','room.js','bot-ai.js','soldier.js','game-rules.js']);
 const portArg=process.argv.find(a=>a.startsWith('--port='));
 const requested=portArg?Number(portArg.slice(7)):8080;
 if(!Number.isInteger(requested)||requested<0||requested>65535){console.error('Invalid port');process.exit(1);}
