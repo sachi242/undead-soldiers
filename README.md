@@ -19,3 +19,7 @@ The local `.github/workflows/pages.yml` is an optional alternative for deploying
 Includes a 3D arena, four bots, armor stripping, limb removal, movement penalties, torso highlighting, tombstone regeneration, exposed-head eliminations, close-range finishers, and confirm tags.
 
 This is an early single-player prototype. Multiplayer, third-person view, wall running, final art/audio, and full balancing remain to be developed. JavaScript syntax has been checked; complete browser gameplay validation remains pending.
+
+## Work together with two Codex CLIs
+
+Start with [the collaboration guide](docs/COLLABORATION.md). Both sessions follow [AGENTS.md](AGENTS.md), check [project status](docs/STATUS.md), claim an [issue](https://github.com/sachi242/undead-soldiers/issues), and work on separate branches. Open a pull request before merging into main.
