@@ -6,3 +6,4 @@ Thumbs.db
 .env.*
 # Downloaded FBX working sources; the game ships the baked animated glTF.
 assets/animations/mixamo/*.fbx
+assets/animations/mixamo/*.rar

@@ -14,7 +14,8 @@
   scope.SoldierVisuals=visuals;
   scope.buildSoldier=function(T,material,mats){
     const model=primitiveFactory(T,material,mats),fallbackPose=model.pose,fallbackArmor=model.setArmor;
-    let visual=null,mixer=null,actions={},active=null,lastTime=null,fireUntil=-1,dying=false,fireAction=null;
+    let visual=null,mixer=null,actions={},active=null,lastTime=null,fireUntil=-1,dying=false,fireAction=null,hitAction=null;
+    let lastYaw=null,turnDelta=0,turnState='',turnUntil=-1;
     const colors=new Map();
     model.assetReady=visuals.load(T).then(g=>{
       const copy=T.SkeletonUtils.clone(g.scene),partGroups={},oldParts={};
@@ -30,24 +31,35 @@
       visual=new T.Group();visual.name='Soldier_01_Mixamo';visual.rotation.y=Math.PI;
       visual.scale.setScalar(2.05/2.95624125);visual.add(copy);model.group.add(visual);
       mixer=new T.AnimationMixer(copy);
-      for(const clip of g.animations){actions[clip.name]=mixer.clipAction(clip);if(/death|jump$|land$/.test(clip.name)){actions[clip.name].setLoop(T.LoopOnce,1);actions[clip.name].clampWhenFinished=true;}}
-      const fireClip=g.animations.find(c=>c.name==='mixamo_fire');
-      if(fireClip){const overlay=fireClip.clone();overlay.name='fire_upper_body';overlay.tracks=overlay.tracks.filter(t=>/Torso|Neck|Head|[LR]_(Shoulder|Arm_Lower|Hand)/.test(t.name));fireAction=mixer.clipAction(overlay);fireAction.setLoop(T.LoopOnce,1);}
+      for(const clip of g.animations){actions[clip.name]=mixer.clipAction(clip);if(/death|jump$|land$|turn(?:Left|Right)$/.test(clip.name)){actions[clip.name].setLoop(T.LoopOnce,1);actions[clip.name].clampWhenFinished=true;}}
+      function overlay(name){const clip=g.animations.find(c=>c.name==='mixamo_'+name);if(!clip)return null;const upper=clip.clone();upper.name=name+'_upper_body';upper.tracks=upper.tracks.filter(t=>/Torso|Neck|Head|[LR]_(Shoulder|Arm_Lower|Hand)/.test(t.name));return mixer.clipAction(upper).setLoop(T.LoopOnce,1);}
+      fireAction=overlay('fire');hitAction=overlay('hit');
       model.assetLoaded=true;const status=scope.document?.querySelector?.('#undead-arena .status');if(status)status.textContent='Soldier_01 + Mixamo animations loaded · click arena to capture mouse';
       return model;
     }).catch(error=>{
       model.assetError=String(error.message||error);const status=scope.document?.querySelector?.('#undead-arena .status');if(status)status.textContent='Character asset failed to load · procedural fallback active';return model;
     });
-    model.trigger=(type,time)=>{if(type==='fire'){fireUntil=time+.24;if(fireAction)fireAction.reset().setEffectiveWeight(1).play();}};
-    model.playDeath=()=>{dying=true;return !!visual;};model.isDying=()=>dying;
-    model.revive=()=>{dying=false;lastTime=null;active=null;if(mixer)mixer.stopAllAction();};
+    model.trigger=(type,time)=>{
+      if(dying)return;
+      if(type==='fire'){fireUntil=time+.27;if(fireAction&&!hitAction?.isRunning())fireAction.reset().setEffectiveWeight(1).play();}
+      if(type==='hit'&&hitAction){fireAction?.stop();hitAction.reset().setEffectiveWeight(1).play();}
+    };
+    model.playDeath=()=>{dying=true;fireAction?.stop();hitAction?.stop();return !!visual;};model.isDying=()=>dying;
+    model.revive=()=>{dying=false;lastTime=null;lastYaw=null;turnDelta=0;turnUntil=-1;active=null;if(mixer)mixer.stopAllAction();};
+    model.animationName=()=>active?.getClip().name;
     model.pose=function(time,moving,arms,legs,reloading=false,baseY=0,context={}){
       if(!visual){fallbackPose(time,moving,arms,legs,reloading,baseY);return;}
       const dt=lastTime===null?0:Math.min(.1,Math.max(0,time-lastTime));lastTime=time;
-      let state=dying||context.dead?'death':legs===0?(reloading?'proneReload':arms===0?'lowCrawl':'crawl'):reloading?'reload':context.airborne?'jump':context.landing?'land':context.slide?'crouch':moving?(context.strafe?'strafe':'run'):'idle';
+      const yaw=model.group.rotation.y;
+      if(lastYaw!==null&&!moving&&!reloading&&!context.airborne&&legs>0&&!dying){const delta=yaw-lastYaw;turnDelta+=Math.atan2(Math.sin(delta),Math.cos(delta));if(Math.abs(turnDelta)>.38&&time>=turnUntil){turnState=turnDelta>0?'turnLeft':'turnRight';turnUntil=time+.65;turnDelta=0;}}
+      else{turnDelta=0;turnUntil=-1;}
+      lastYaw=yaw;
+      const motion=context.motion||'forward';
+      const locomotion=motion==='back'?(context.sprint?'backRun':'backWalk'):motion==='left'?(context.sprint?'strafeFastLeft':'strafeLeft'):motion==='right'?(context.sprint?'strafeFastRight':'strafeRight'):context.walking?'walk':'run';
+      let state=dying||context.dead?'death':legs===0?(reloading?'proneReload':arms===0?'lowCrawl':'crawl'):reloading?'reload':context.airborne?'jump':context.landing?'land':context.slide?'crouch':moving?locomotion:time<turnUntil?turnState:'idle';
       const name='mixamo_'+state,action=actions[name]||actions.Idle_Weapon;
       if(action&&action!==active){action.reset().setEffectiveWeight(1).fadeIn(.12).play();if(state==='land')action.time=Math.max(0,action.getClip().duration-.45);if(active)active.fadeOut(.12);active=action;}
-      if(active&&(state==='run'||state==='strafe'||state==='crawl'||state==='lowCrawl'))active.setEffectiveTimeScale(moving?1:0);
+      if(active&&(state==='run'||state==='walk'||state.startsWith('strafe')||state.startsWith('back')||state==='crawl'||state==='lowCrawl'))active.setEffectiveTimeScale(moving?1:0);
       if(active&&state==='run'&&context.sprint)active.setEffectiveTimeScale(1.35);
       if(fireAction&&time>fireUntil&&fireAction.isRunning())fireAction.fadeOut(.08);
       mixer.update(dt);model.group.position.y=baseY;

@@ -93,7 +93,7 @@ function detach(b,name){
   if(b.limbs===0){b.tomb=5;b.aura.visible=true;botRelic(b);tell('Torso highlighted. Finish its head before it reaches the tombstone.');}
 }
 function fire(){if(duel){duelFire();return;}if(!running||cooldown>0||reload>0)return;if(ammo===0){doReload();return;}ammo--;cooldown=weapons[weaponIndex].delay;flash.intensity=4;gun.position.z=.08;aimRay();const candidates=bots.filter(b=>b.alive).flatMap(b=>Object.values(b.parts).filter(m=>m.visible));const targets=ray.intersectObjects(candidates,true);const walls=ray.intersectObjects(obstacles.map(o=>o.mesh));shotVisual(targets[0],walls[0]);for(const b of bots){const point=b.group.position.clone().add(new T.Vector3(0,1.1,0));if(ray.ray.distanceToPoint(point)<1.5)b.brain.threatened();}if(targets.length&&(!walls.length||targets[0].distance<walls[0].distance)){let {bot:b,part}=targets[0].object.userData;$('.hitmark').textContent='×';setTimeout(()=>$('.hitmark').textContent='',100);const state={helmet:b.armored,parts:Object.fromEntries(GameRules.LIMBS.map(k=>[k,b.parts[k].visible])),armor:b.armor};const result=GameRules.hit(state,part);b.armored=state.helmet;b.parts.helmet.visible=state.helmet;
-if(result.kind==='eliminated')dropTag(b);else if(result.kind==='limb')detach(b,result.part);else tell(result.kind==='armor'?'Armor plate broken. Hit that limb again to sever.':result.kind==='helmet'?'Helmet broken. The head is exposed.':'Torso exposed. Aim for the head.');}hud();}
+if(result.kind!=='eliminated')b.trigger?.('hit',elapsed);if(result.kind==='eliminated')dropTag(b);else if(result.kind==='limb')detach(b,result.part);else tell(result.kind==='armor'?'Armor plate broken. Hit that limb again to sever.':result.kind==='helmet'?'Helmet broken. The head is exposed.':'Torso exposed. Aim for the head.');}hud();}
 function doReload(){if(ammo<weapons[weaponIndex].capacity&&reload===0){reload=1.2;hud();}}
 function end(msg){selfModel.group.visible=false;root.classList.remove('playing');releaseMouse();if(duel){room.send({type:'eliminated',life,x:player.x,z:player.z});}running=false;$('.cover').hidden=false;$('.cover h1').textContent=msg;$('.cover p').textContent='Your confirm tags: '+score+'. Enter again for a fresh run.';$('.enter').textContent='Respawn';started=false;}
 function relicDestination(origin,budget){
@@ -103,7 +103,7 @@ function relicDestination(origin,budget){
 function createRush(){arms=0;legs=0;Object.keys(localParts).forEach(k=>localParts[k]=false);rush=5;if(relic)scene.remove(relic);const chosen=relicDestination(player,GameRules.movement(0,0).speed*4);relic=new T.Group();relic.position.set(chosen.x,0,chosen.z);box(.85,1.3,.3,mats.glow,0,.65,0,relic);box(1.35,.2,.3,mats.glow,0,.95,0,relic);const light=new T.PointLight(0xbbff88,2,10);light.position.y=1.5;relic.add(light);scene.add(relic);tell('REGENERATE: follow the relic bearing before five seconds expire.');hud();}
 function playerHit(part){
   const state={helmet,parts:localParts,armor:localArmor},result=GameRules.hit(state,part);helmet=state.helmet;
-  if(result.kind==='eliminated'){end('Headshot.');return;}
+  if(result.kind==='eliminated'){end('Headshot.');return;}selfModel.trigger?.('hit',elapsed);
   arms=Number(localParts.leftArm)+Number(localParts.rightArm);legs=Number(localParts.leftLeg)+Number(localParts.rightLeg);
   if(arms+legs===0&&rush===0)createRush();else tell(result.kind==='armor'?'Armor broken: '+result.part:result.kind==='limb'?'Limb severed: '+result.part:result.kind==='helmet'?'Helmet broken. Your head is exposed.':'Torso hit. Head still exposed.');hud();
 }
@@ -168,6 +168,7 @@ function updateVertical(dt,f,s,dx,dz){const wasGrounded=grounded;
   grounded=groundY<=support;if(grounded){groundY=support;velocity=0;wallTime=0;if(!wasGrounded)landingTime=.4;}
 }
 function updateRelicBearing(){if(!relic)return;let bearing=Math.atan2(relic.position.x-player.x,-(relic.position.z-player.z))+yaw;while(bearing>Math.PI)bearing-=Math.PI*2;while(bearing<-Math.PI)bearing+=Math.PI*2;$('.distance').textContent+=' · '+(Math.abs(bearing)<.3?'AHEAD':bearing>0?'RIGHT →':'← LEFT');}
+function playerMotion(){if(keys.KeyS&&!keys.KeyW)return 'back';if(!keys.KeyW&&!keys.KeyS){if(keys.KeyA&&!keys.KeyD)return 'left';if(keys.KeyD&&!keys.KeyA)return 'right';}return 'forward';}
 function updateView(dt){
   const state=GameRules.movement(arms,legs),moving=!!(keys.KeyW||keys.KeyA||keys.KeyS||keys.KeyD);stompTime=Math.max(0,stompTime-dt);landingTime=Math.max(0,landingTime-dt);
   camera.position.set(player.x,groundY+(slideTime>0?.8:state.height)+(legs===1&&moving?Math.abs(Math.sin(elapsed*10))*.12:0),player.z);
@@ -175,7 +176,7 @@ function updateView(dt){
   camera.fov+=( (ads?52:78)-camera.fov)*Math.min(1,dt*12);camera.updateProjectionMatrix();
   selfModel.group.visible=thirdPerson&&started;gun.visible=!thirdPerson;
   if(thirdPerson){const eye=camera.position.clone();camera.translateX(.55);camera.translateZ(3.8);const offset=camera.position.clone().sub(eye),blocker=new T.Raycaster(eye,offset.clone().normalize(),0,offset.length()).intersectObjects(obstacles.map(o=>o.mesh))[0];if(blocker)camera.position.copy(eye).addScaledVector(offset.normalize(),Math.max(.15,blocker.distance-.2));
-    selfModel.group.position.set(player.x,groundY,player.z);selfModel.group.rotation.y=yaw+Math.PI;selfModel.setArmor(localArmor);selfModel.parts.helmet.visible=helmet;GameRules.LIMBS.forEach(k=>selfModel.parts[k].visible=localParts[k]);selfModel.pose(elapsed,moving,arms,legs,reload>0,groundY,{airborne:!grounded,landing:landingTime>0,slide:slideTime>0,strafe:!!(keys.KeyA||keys.KeyD)&&!keys.KeyW&&!keys.KeyS,sprint:!!keys.ShiftLeft});
+    selfModel.group.position.set(player.x,groundY,player.z);selfModel.group.rotation.y=yaw+Math.PI;selfModel.setArmor(localArmor);selfModel.parts.helmet.visible=helmet;GameRules.LIMBS.forEach(k=>selfModel.parts[k].visible=localParts[k]);selfModel.pose(elapsed,moving,arms,legs,reload>0,groundY,{airborne:!grounded,landing:landingTime>0,slide:slideTime>0,motion:playerMotion(),walking:ads,sprint:!!keys.ShiftLeft});
   }
   const target=duel?remote:bots.find(b=>finishable(b));$('.finisher').textContent=finishable(target)?'E · HEAD STOMP':wallActive?'WALL RUN · '+Math.max(0,state.wallTime-wallTime).toFixed(1)+'s':'';
 }
@@ -203,7 +204,7 @@ function updateBot(b,dt,i){
   b.pathTime-=dt;if(b.pathTime<=0){b.pathTime=command.mode==='dodge'?.15:.6;b.path=navigator.route(pos,dest);}
   if(command.mode==='dodge'){const dx=forward.z*command.direction*command.speed*dt,dz=-forward.x*command.direction*command.speed*dt;if(walkable(pos.x+dx,pos.z+dz)){pos.x+=dx;pos.z+=dz;b.moving=true;}else{b.brain.direction*=-1;b.moving=false;}}
   else {while(b.path.length&&Math.hypot(b.path[0].x-pos.x,b.path[0].z-pos.z)<.22)b.path.shift();b.moving=false;if(b.path.length){const p=b.path[0],d=Math.hypot(p.x-pos.x,p.z-pos.z),step=Math.min(d,command.speed*dt),nx=pos.x+(p.x-pos.x)/d*step,nz=pos.z+(p.z-pos.z)/d*step;if(walkable(nx,nz)){pos.x=nx;pos.z=nz;b.moving=true;}else b.pathTime=0;}}
-  b.setArmor(b.armor);b.group.rotation.y=Math.atan2(forward.x,forward.z);b.pose(elapsed,b.moving,armCount,legCount,b.brain.reload>0,0,{strafe:command.mode==='strafe'||command.mode==='dodge',sprint:command.mode==='dodge'});
+  b.setArmor(b.armor);b.group.rotation.y=Math.atan2(forward.x,forward.z);b.pose(elapsed,b.moving,armCount,legCount,b.brain.reload>0,0,{motion:command.mode==='retreat'?'back':command.mode==='strafe'||command.mode==='dodge'?(command.direction>0?'left':'right'):'forward',sprint:command.mode==='dodge'});
   if(b.limbs===0){b.tomb-=dt;if(Math.hypot(pos.x-b.dest.x,pos.z-b.dest.z)<1){restoreBot(b);b.brain.reset();tell('Bot regenerated at its tombstone.');}else if(b.tomb<=0)dropTag(b);}
   if(command.fire){b.trigger?.('fire',elapsed);
     const spread=(b.moving?.05:.025)*(armCount===1?1.4:armCount===0?1.8:1),end=target.clone().add(new T.Vector3((Math.random()-.5)*distance*spread,(Math.random()-.5)*distance*spread,(Math.random()-.5)*distance*spread));
@@ -213,7 +214,7 @@ function updateBot(b,dt,i){
   }
   $('.bot-readout').textContent='TRAINING BOT · '+b.brain.state+' · AMMO '+b.brain.ammo+'/8'+(b.brain.reload>0?' · '+b.brain.reload.toFixed(1)+'s':'')+' · ARMS '+armCount+' · LEGS '+legCount+(b.tomb>0?' · RELIC '+b.tomb.toFixed(1)+'s':'');
 }
-function statePacket(){return {type:'state',x:player.x,y:groundY,z:player.z,yaw,life,alive:started,helmet,parts:{...localParts},armor:{...localArmor},rush,moving:!!(keys.KeyW||keys.KeyA||keys.KeyS||keys.KeyD),reloading:reload>0,airborne:!grounded,sliding:slideTime>0};}
+function statePacket(){return {type:'state',x:player.x,y:groundY,z:player.z,yaw,life,alive:started,helmet,parts:{...localParts},armor:{...localArmor},rush,moving:!!(keys.KeyW||keys.KeyA||keys.KeyS||keys.KeyD),reloading:reload>0,airborne:!grounded,sliding:slideTime>0,motion:playerMotion(),walking:ads,sprint:!!keys.ShiftLeft};}
 function roomStatus(state,message){
   $('.room-status').textContent=message;
   $('.leave').disabled=state==='idle'||state==='error';
@@ -238,7 +239,7 @@ function receive(data){
     if(!['x','y','z','yaw','life'].every(k=>Number.isFinite(data[k]))||!Number.isInteger(data.life)||data.life<remoteLife||Math.abs(data.x)>30||Math.abs(data.z)>30||data.y<0||data.y>20)return;
     if(!data.parts||!Object.keys(localParts).every(k=>typeof data.parts[k]==='boolean')||typeof data.helmet!=='boolean'||typeof data.alive!=='boolean')return;
     remote.groundY=data.y;remoteLife=data.life;remote.group.position.set(data.x,data.y+(Object.values(data.parts).some(Boolean)?0:-1.05),data.z);remote.group.rotation.y=data.yaw+Math.PI;
-    remote.armor=data.armor&&GameRules.LIMBS.every(k=>typeof data.armor[k]==='boolean')?data.armor:GameRules.armor();remote.setArmor(remote.armor);if(data.alive&&!remote.alive)remote.revive?.();if(!data.alive&&remote.alive)remote.playDeath?.();remote.animationState={moving:data.moving===true,reloading:data.reloading===true,airborne:data.airborne===true,sliding:data.sliding===true};remote.alive=data.alive;remote.group.visible=data.alive||remote.isDying?.();remote.armored=data.helmet;
+    const nextArmor=data.armor&&GameRules.LIMBS.every(k=>typeof data.armor[k]==='boolean')?data.armor:GameRules.armor();if(remote.alive&&data.alive&&(remote.armored!==data.helmet||GameRules.LIMBS.some(k=>remote.parts[k].visible!==data.parts[k]||remote.armor[k]!==nextArmor[k])))remote.trigger?.('hit',elapsed);remote.armor=nextArmor;remote.setArmor(remote.armor);if(data.alive&&!remote.alive)remote.revive?.();if(!data.alive&&remote.alive)remote.playDeath?.();remote.animationState={moving:data.moving===true,reloading:data.reloading===true,airborne:data.airborne===true,sliding:data.sliding===true,motion:['back','left','right'].includes(data.motion)?data.motion:'forward',walking:data.walking===true,sprint:data.sprint===true};remote.alive=data.alive;remote.group.visible=data.alive||remote.isDying?.();remote.armored=data.helmet;
     remote.parts.helmet.visible=data.helmet;Object.keys(localParts).forEach(k=>remote.parts[k].visible=data.parts[k]);
     remote.limbs=Object.values(data.parts).filter(Boolean).length;remote.aura.visible=remote.limbs===0;
   }else if(data.type==='shot'){remote?.trigger?.('fire',elapsed);
@@ -262,7 +263,7 @@ $('.host').onclick=()=>room.start('host');$('.join').onclick=()=>room.start('gue
 $('.leave').onclick=()=>room.leave();$('.pin').addEventListener('input',e=>e.target.value=e.target.value.replace(/[^0-9]/g,''));
 $('.pin').addEventListener('keydown',e=>{if(e.key==='Enter')$('.join').click();});
 window.addEventListener('pagehide',()=>room.leave());
-function networkFrame(dt){if(!duel)return;if(remote&&(remote.alive||remote.isDying?.())){const a=Number(remote.parts.leftArm.visible)+Number(remote.parts.rightArm.visible),l=Number(remote.parts.leftLeg.visible)+Number(remote.parts.rightLeg.visible);remote.pose(elapsed,remote.animationState?.moving||false,a,l,remote.animationState?.reloading||false,remote.groundY||0,{airborne:remote.animationState?.airborne,slide:remote.animationState?.sliding,dead:!remote.alive});}netClock+=dt;if(netClock>=.05){netClock=0;room.send(statePacket());}}
+function networkFrame(dt){if(!duel)return;if(remote&&(remote.alive||remote.isDying?.())){const a=Number(remote.parts.leftArm.visible)+Number(remote.parts.rightArm.visible),l=Number(remote.parts.leftLeg.visible)+Number(remote.parts.rightLeg.visible);remote.pose(elapsed,remote.animationState?.moving||false,a,l,remote.animationState?.reloading||false,remote.groundY||0,{airborne:remote.animationState?.airborne,slide:remote.animationState?.sliding,motion:remote.animationState?.motion,walking:remote.animationState?.walking,sprint:remote.animationState?.sprint,dead:!remote.alive});}netClock+=dt;if(netClock>=.05){netClock=0;room.send(statePacket());}}
 function duelFire(stomp=false){
   if(!running||cooldown>0||reload>0)return;
   if(stomp){if(!remote?.alive)return;if(!finishable(remote))return;stompTime=.3;cooldown=.5;room.send({type:'hit',part:'stomp',life:remoteLife,id:++shotId});return;}

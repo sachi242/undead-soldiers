@@ -1,30 +1,18 @@
-# Mixamo animation source set
+# Mixamo animation sources
 
-Downloaded from the signed-in Mixamo library on 2026-11-05. Source character: Y Bot. Exports: binary FBX, Without Skin, 30 FPS, no keyframe reduction. In Place was enabled for Rifle Run, Rifle Crouch Walk, Rifle Side Step, and Prone Forward where available. The game controller owns world movement; root motion should be stripped/normalized during retargeting.
+The current bake uses 16 loose FBX motions supplied in this folder. Y Bot.fbx is the reference rig; its one-frame pose is not a gameplay clip. The RAR is ignored. Raw FBX working files stay local; the baked animated glTF is tracked.
 
-| File | Intended state |
+| Source | Game animation |
 | --- | --- |
-| Rifle Aiming Idle.fbx | Armed idle / ADS |
-| Rifle Run.fbx | Armed running; adjust playback rate for sprint |
-| Firing Rifle.fbx | Rifle shot / upper-body firing blend |
-| Rifle Side Step.fbx | Strafe; mirrored variation requires a verified mirror pass |
-| Rifle Crouch Walk.fbx | Crouched movement / slide transition source |
-| Reloading.fbx | Standing reload |
-| Prone Reloading.fbx | Reload while prone |
-| Prone Forward.fbx | Prone movement source |
-| Low Crawl.fbx | Low crawl source; not a finished limbless worm animation |
-| Jump.fbx | Rifle jump |
-| Jumping Down.fbx | Jump-down / landing source |
-| Rifle Death.fbx | Death / collapse source |
+| rifle aiming idle, rifle run, walking | Armed idle, run, and ADS walk |
+| run backwards, walking backwards | Backward sprint and walk |
+| strafe left, strafe right | Directional strafe |
+| strafe (2), strafe | Fast left/right strafe |
+| turn left, turning right 45 degrees | Standing turns |
+| firing rifle, hit reaction | Upper-body firing and hit overlays |
+| reloading, rifle jump | Standing reload and jump |
+| toss grenade | Baked for future grenade gameplay; not triggered |
 
-## Verified
-All twelve binary FBX files parse using the project's Three.js 0.128.0 FBXLoader and each contains a nonempty AnimationClip with 53 tracks. `manifest.json` records lengths, track counts, file sizes, and SHA-256 hashes. Run `node scripts/inspect-animations.cjs` after `npm install` to regenerate the inventory. This is file validation, not visual animation/gameplay QA.
+The previous crouch, prone reload, prone crawl, low crawl, landing, and death clips are retained from the existing baked glTF when their loose files are absent. Rebuilding uses `npm run build:character`; it does not need or read the archive. The bake verifies that retained tracks still match the target rig, removes horizontal movement, and normalizes vertical placement of newly baked clips. `node scripts/inspect-animations.cjs` inventories the loose FBXs without opening the RAR.
 
-## Retargeting
-`../../Soldier_01.gltf` was exported from Blockbench and uses a custom rig (Hips, Torso, Neck, Head, L_Shoulder/L_Arm_Lower/L_Hand, R equivalents, and leg chains). The bake in scripts/build-soldier.cjs maps bones, fits rest directions, removes horizontal root motion, corrects the floor, and preserves the supplied Idle_Weapon and Idle_No_Weapon clips. Raw Mixamo tracks cannot be directly assigned to the custom rig.
-
-Wall running, true limbless wriggling, single-leg hopping, and the head stomp require custom animation or substantial adaptation. Detached limbs need animation masks or mesh/skin handling that preserves the existing damage mechanics.
-
-Three supplied skins are preserved. `../../Soldier_01.png` is a default copy of Soldier_01_Skin_2_SgtFrag.png to satisfy the original glTF image URI. FishHead and Zombie remain alternatives.
-
-The downloads remain local working sources. The game now uses the derived assets/Soldier_01_animated.gltf, with retargeted clips and independent animated skeletons. See docs/CHARACTER.md for the runtime state mapping and remaining custom-animation work. Original FBX downloads are not published as standalone files.
+The supplied Blockbench rig and both original idles are preserved. See [character integration](../../../docs/CHARACTER.md) and the [retarget report](../retarget-report.json).

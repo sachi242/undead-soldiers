@@ -20,75 +20,141 @@
   "clips": [
     {
       "name": "mixamo_idle",
-      "source": "Rifle Aiming Idle.fbx",
-      "frames": 94,
-      "duration": 3.099998904632568
+      "source": "rifle aiming idle.fbx",
+      "frames": 92,
+      "duration": 3.0333323015441893
     },
     {
       "name": "mixamo_run",
-      "source": "Rifle Run.fbx",
-      "frames": 24,
-      "duration": 0.7333323492279052
+      "source": "rifle run.fbx",
+      "frames": 22,
+      "duration": 0.699998988079071
+    },
+    {
+      "name": "mixamo_walk",
+      "source": "walking.fbx",
+      "frames": 43,
+      "duration": 1.3666656746139527
+    },
+    {
+      "name": "mixamo_backRun",
+      "source": "run backwards.fbx",
+      "frames": 18,
+      "duration": 0.5333323611488342
+    },
+    {
+      "name": "mixamo_backWalk",
+      "source": "walking backwards.fbx",
+      "frames": 43,
+      "duration": 1.3999989761581422
     },
     {
       "name": "mixamo_fire",
-      "source": "Firing Rifle.fbx",
+      "source": "firing rifle.fbx",
       "frames": 10,
       "duration": 0.26666568057441714
     },
     {
-      "name": "mixamo_strafe",
-      "source": "Rifle Side Step.fbx",
-      "frames": 36,
-      "duration": 1.166665626930237
+      "name": "mixamo_strafeLeft",
+      "source": "strafe left.fbx",
+      "frames": 30,
+      "duration": 0.9333323373069763
+    },
+    {
+      "name": "mixamo_strafeRight",
+      "source": "strafe right.fbx",
+      "frames": 44,
+      "duration": 1.4333322777023316
+    },
+    {
+      "name": "mixamo_strafeFastLeft",
+      "source": "strafe (2).fbx",
+      "frames": 18,
+      "duration": 0.5333323611488342
+    },
+    {
+      "name": "mixamo_strafeFastRight",
+      "source": "strafe.fbx",
+      "frames": 22,
+      "duration": 0.6666656865348816
+    },
+    {
+      "name": "mixamo_turnLeft",
+      "source": "turn left.fbx",
+      "frames": 30,
+      "duration": 0.9333323373069763
+    },
+    {
+      "name": "mixamo_turnRight",
+      "source": "turning right 45 degrees.fbx",
+      "frames": 31,
+      "duration": 0.999999
+    },
+    {
+      "name": "mixamo_hit",
+      "source": "hit reaction.fbx",
+      "frames": 15,
+      "duration": 0.43333233730697635
+    },
+    {
+      "name": "mixamo_grenade",
+      "source": "toss grenade.fbx",
+      "frames": 98,
+      "duration": 3.1999990476837157
+    },
+    {
+      "name": "mixamo_reload",
+      "source": "reloading.fbx",
+      "frames": 100,
+      "duration": 3.299998952316284
+    },
+    {
+      "name": "mixamo_jump",
+      "source": "rifle jump.fbx",
+      "frames": 20,
+      "duration": 0.5999990238418579
     },
     {
       "name": "mixamo_crouch",
       "source": "Rifle Crouch Walk.fbx",
       "frames": 61,
-      "duration": 1.9666656984558106
-    },
-    {
-      "name": "mixamo_reload",
-      "source": "Reloading.fbx",
-      "frames": 100,
-      "duration": 3.299998952316284
+      "duration": 1.9666657447814941,
+      "retained": true
     },
     {
       "name": "mixamo_proneReload",
       "source": "Prone Reloading.fbx",
       "frames": 194,
-      "duration": 6.3999990953674315
+      "duration": 6.399999141693115,
+      "retained": true
     },
     {
       "name": "mixamo_crawl",
       "source": "Prone Forward.fbx",
       "frames": 71,
-      "duration": 2.3333322538604735
+      "duration": 2.3333323001861572,
+      "retained": true
     },
     {
       "name": "mixamo_lowCrawl",
       "source": "Low Crawl.fbx",
       "frames": 71,
-      "duration": 2.3333322538604735
-    },
-    {
-      "name": "mixamo_jump",
-      "source": "Jump.fbx",
-      "frames": 84,
-      "duration": 2.7666656507720946
+      "duration": 2.3333323001861572,
+      "retained": true
     },
     {
       "name": "mixamo_land",
       "source": "Jumping Down.fbx",
       "frames": 90,
-      "duration": 2.933332396911621
+      "duration": 2.9333324432373047,
+      "retained": true
     },
     {
       "name": "mixamo_death",
       "source": "Rifle Death.fbx",
       "frames": 115,
-      "duration": 3.799998952316284
+      "duration": 3.7999989986419678,
+      "retained": true
     }
   ]
 }

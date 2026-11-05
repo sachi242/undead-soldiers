@@ -1,8 +1,9 @@
 const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const {T,loadCharacter}=require('./load-character.cjs');
-test('provided character loads with seven damage regions and twelve retargeted clips',async()=>{
+test('provided character loads new motion and retained specialist clips in seven damage regions',async()=>{
   const g=await loadCharacter(),meshes=[];g.scene.traverse(o=>{if(o.isSkinnedMesh)meshes.push(o);});
-  assert.equal(meshes.length,7);assert.equal(g.animations.filter(a=>a.name.startsWith('mixamo_')).length,12);
+  assert.equal(meshes.length,7);assert.equal(g.animations.filter(a=>a.name.startsWith('mixamo_')).length,22);
+  for(const name of ['walk','backRun','backWalk','strafeLeft','strafeRight','strafeFastLeft','strafeFastRight','turnLeft','turnRight','hit','grenade','crawl','land','death'])assert.ok(g.animations.some(a=>a.name==='mixamo_'+name&&a.tracks.length===17),name);
   assert.ok(g.animations.some(a=>a.name==='Idle_Weapon'));
   for(const mesh of meshes){assert.equal(mesh.skeleton.bones.length,16);assert.ok(mesh.geometry.index.count>0);}
   const bone=g.scene.getObjectByName('L_Arm_Lower'),mixer=new T.AnimationMixer(g.scene),before=bone.quaternion.clone();
@@ -22,4 +23,11 @@ test('independent animated actors retain limb visibility and gameplay tags',asyn
   assert.equal(a.parts.leftArm.visible,false);assert.equal(b.parts.leftArm.visible,true);
   const askin=a.parts.body.children[0],bskin=b.parts.body.children[0];assert.notEqual(askin.skeleton.bones[0],bskin.skeleton.bones[0]);
   a.trigger('fire',.2);a.pose(.2,false,1,2);assert.equal(a.playDeath(),true);a.pose(.3,false,1,2);a.revive();assert.equal(a.isDying(),false);
+  a.pose(.4,true,1,2,false,0,{motion:'back'});assert.equal(a.animationName(),'mixamo_backWalk');
+  a.pose(.5,true,1,2,false,0,{motion:'back',sprint:true});assert.equal(a.animationName(),'mixamo_backRun');
+  a.pose(.6,true,1,2,false,0,{motion:'left',sprint:true});assert.equal(a.animationName(),'mixamo_strafeFastLeft');
+  a.pose(.7,true,1,2,false,0,{motion:'right'});assert.equal(a.animationName(),'mixamo_strafeRight');
+  a.pose(.8,true,1,2,false,0,{walking:true});assert.equal(a.animationName(),'mixamo_walk');
+  a.pose(.9,false,1,2);a.group.rotation.y=.5;a.pose(1,false,1,2);assert.equal(a.animationName(),'mixamo_turnLeft');
+  a.trigger('hit',1);a.pose(1.1,false,1,2);assert.equal(a.parts.leftArm.visible,false);
 });
