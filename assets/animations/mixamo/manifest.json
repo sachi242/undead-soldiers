@@ -1,0 +1,217 @@
+{
+  "source": "https://www.mixamo.com/",
+  "updated": "2026-11-05",
+  "sourceRig": "Y Bot / Mixamo",
+  "bakeFPS": 30,
+  "status": "Loose FBX sources only; archives ignored. Runtime uses assets/Soldier_01_animated.gltf",
+  "clips": [
+    {
+      "file": "firing rifle.fbx",
+      "role": "motion",
+      "bytes": 335105,
+      "sha256": "a6d08cf26caaff4a939992c0dceafad56e715ad9d0b8ab03d901759fac79adbc",
+      "clips": [
+        {
+          "name": "mixamo.com",
+          "durationSeconds": 0.2666666805744171,
+          "tracks": 53
+        }
+      ]
+    },
+    {
+      "file": "hit reaction.fbx",
+      "role": "motion",
+      "bytes": 377265,
+      "sha256": "49351bbef48f5fcd7f67089ab25fea60ea728193b6d08af9a642931a1d5f7c79",
+      "clips": [
+        {
+          "name": "mixamo.com",
+          "durationSeconds": 0.4333333373069763,
+          "tracks": 53
+        }
+      ]
+    },
+    {
+      "file": "reloading.fbx",
+      "role": "motion",
+      "bytes": 576081,
+      "sha256": "6c66b1867a7fc23cdd40a13eaaea1cb4c303829eb0d4011af887fb40a263c8e2",
+      "clips": [
+        {
+          "name": "mixamo.com",
+          "durationSeconds": 3.299999952316284,
+          "tracks": 53
+        }
+      ]
+    },
+    {
+      "file": "rifle aiming idle.fbx",
+      "role": "motion",
+      "bytes": 497329,
+      "sha256": "9a7ec0ada7995d31a1fbf8ff060b5feb29a1cf4b64a782faf6d787255aa0d8e5",
+      "clips": [
+        {
+          "name": "mixamo.com",
+          "durationSeconds": 3.0333333015441895,
+          "tracks": 53
+        }
+      ]
+    },
+    {
+      "file": "rifle jump.fbx",
+      "role": "motion",
+      "bytes": 335073,
+      "sha256": "b09e6c6f56cb63c805189d918ffdfd1c23d8c8aada81a1a92b6a06da8427fac8",
+      "clips": [
+        {
+          "name": "mixamo.com",
+          "durationSeconds": 0.6000000238418579,
+          "tracks": 53
+        }
+      ]
+    },
+    {
+      "file": "rifle run.fbx",
+      "role": "motion",
+      "bytes": 344369,
+      "sha256": "beff0d00027c66b61b168a88f6cd416bd497b667b4f97458e3580d53b9791f0f",
+      "clips": [
+        {
+          "name": "mixamo.com",
+          "durationSeconds": 0.699999988079071,
+          "tracks": 53
+        }
+      ]
+    },
+    {
+      "file": "run backwards.fbx",
+      "role": "motion",
+      "bytes": 330001,
+      "sha256": "b6c9786d45ad9db091e6883d046044a9bba6a5ab3cf1b400dca51b7fe9b0d041",
+      "clips": [
+        {
+          "name": "mixamo.com",
+          "durationSeconds": 0.5333333611488342,
+          "tracks": 53
+        }
+      ]
+    },
+    {
+      "file": "strafe (2).fbx",
+      "role": "motion",
+      "bytes": 328129,
+      "sha256": "a2ed0654d6039f7bf7432dd26453d95dfef05310507bd6aeb52a5ec123306bf6",
+      "clips": [
+        {
+          "name": "mixamo.com",
+          "durationSeconds": 0.5333333611488342,
+          "tracks": 53
+        }
+      ]
+    },
+    {
+      "file": "strafe left.fbx",
+      "role": "motion",
+      "bytes": 375393,
+      "sha256": "8cdf546670beb4443cfc376195507f1b6c7b30dd7ac17771755d6a7311ab7952",
+      "clips": [
+        {
+          "name": "mixamo.com",
+          "durationSeconds": 0.9333333373069763,
+          "tracks": 53
+        }
+      ]
+    },
+    {
+      "file": "strafe right.fbx",
+      "role": "motion",
+      "bytes": 395089,
+      "sha256": "eb0482f4d5f8a0805a20d2e8971e47ceccc7549f17fa8e70ac987fc7d3bccb37",
+      "clips": [
+        {
+          "name": "mixamo.com",
+          "durationSeconds": 1.4333332777023315,
+          "tracks": 53
+        }
+      ]
+    },
+    {
+      "file": "strafe.fbx",
+      "role": "motion",
+      "bytes": 322001,
+      "sha256": "9f5f9927dedd096e4c4652e81945bcdbb16b17da05f443b79bf58c1f6fe1d803",
+      "clips": [
+        {
+          "name": "mixamo.com",
+          "durationSeconds": 0.6666666865348816,
+          "tracks": 53
+        }
+      ]
+    },
+    {
+      "file": "toss grenade.fbx",
+      "role": "motion",
+      "bytes": 577681,
+      "sha256": "6a677acb17ac9565159e6b722ad378b61d89d6d96db47af6444ddab2fa66322b",
+      "clips": [
+        {
+          "name": "mixamo.com",
+          "durationSeconds": 3.200000047683716,
+          "tracks": 53
+        }
+      ]
+    },
+    {
+      "file": "turn left.fbx",
+      "role": "motion",
+      "bytes": 353969,
+      "sha256": "95242d4d047c168bf58de8834c16eb36c57082e62358b3e0dc6e04794858fb5c",
+      "clips": [
+        {
+          "name": "mixamo.com",
+          "durationSeconds": 0.9333333373069763,
+          "tracks": 53
+        }
+      ]
+    },
+    {
+      "file": "turning right 45 degrees.fbx",
+      "role": "motion",
+      "bytes": 366209,
+      "sha256": "0c12c190a274fee759d7a068b7c4b10d37ee9a41c1da4743e031155740f0fccd",
+      "clips": [
+        {
+          "name": "mixamo.com",
+          "durationSeconds": 1,
+          "tracks": 53
+        }
+      ]
+    },
+    {
+      "file": "walking backwards.fbx",
+      "role": "motion",
+      "bytes": 396961,
+      "sha256": "c01111005e482f8f6f8228166242b5f17d14241153a51597757a665552453419",
+      "clips": [
+        {
+          "name": "mixamo.com",
+          "durationSeconds": 1.399999976158142,
+          "tracks": 53
+        }
+      ]
+    },
+    {
+      "file": "walking.fbx",
+      "role": "motion",
+      "bytes": 370177,
+      "sha256": "250f1acb5db481980bfda49ccb41d69b63ac2f73001459d504eac12805fe1807",
+      "clips": [
+        {
+          "name": "mixamo.com",
+          "durationSeconds": 1.3666666746139526,
+          "tracks": 53
+        }
+      ]
+    }
+  ]
+}

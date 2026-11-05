@@ -1,0 +1,7 @@
+{
+  "name": "undead-soldiers",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": { "test": "node --test tests/*.test.cjs", "build:character": "node scripts/build-soldier.cjs" },
+  "devDependencies": { "three": "0.128.0" }
+}
