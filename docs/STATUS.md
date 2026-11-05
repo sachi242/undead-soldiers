@@ -6,10 +6,11 @@ Updated: 2026-11-05
 - Static HTML/JavaScript game in index.html; Three.js 0.128.0 loaded from CDN.
 - Initial solo prototype includes an arena, four bots, limb removal, helmet/head hits, confirm tags, and a five-second regeneration demonstration.
 - Design document: "Undead Soliders.txt". Prototype is not the completed design.
-- Multiplayer, third-person view, wall running, final art/audio, and full balancing are not complete.
+- Two-player peer-to-peer PIN duels are implemented on the multiplayer feature branch, with solo bots preserved. This is casual client-trusted networking; no relay or host migration is configured.
+- Third-person view, wall running, final art/audio, and full balancing are not complete.
 
 ## Verification and hosting
-- Earlier JavaScript syntax validation passed. Full browser gameplay validation has not been completed.
+- JavaScript syntax and six transport lifecycle tests passed for PIN multiplayer. A two-tab browser test verified host/join, opponent visibility, helmet damage, headshot elimination, respawn, and disconnect cleanup with no console errors observed. Separate-computer/network testing and the full gameplay checklist remain pending.
 - Source is uploaded to GitHub. Pages publishes main from the repository root.
 - Last observed publishing attempt: build passed, deployment returned HTTP 500, retry was queued. This is historical status, not a live deployment check.
 - No preview deployment is configured for feature branches.

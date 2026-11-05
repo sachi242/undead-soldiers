@@ -4,6 +4,8 @@ A playable browser-based 3D arena combat prototype based on `Undead Soliders.txt
 
 ## Play locally
 
+For two-player play, choose **Host room**, share the displayed four-digit PIN, and have your friend choose **Join room** with that PIN. Both browsers need the same version. See [multiplayer setup and limits](docs/MULTIPLAYER.md). Use a local HTTP server (`python -m http.server 8080`) for development, then open http://localhost:8080.
+
 Open `index.html` in a modern desktop browser with WebGL enabled. Three.js is loaded from a pinned CDN and requires an internet connection.
 
 Click **Enter arena**, then use WASD to move, drag to aim, and click to fire. Shift sprints, Space jumps, C slides, R reloads, and E finishes nearby limbless enemies. The **Try tombstone rush** button demonstrates the five-second regeneration mechanic.
