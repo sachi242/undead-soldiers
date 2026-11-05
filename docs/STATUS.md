@@ -4,7 +4,8 @@ Updated: 2026-11-05
 
 ## Current code
 - Static HTML/JavaScript game in index.html; Three.js 0.128.0 loaded from CDN.
-- Initial solo prototype includes an arena, four bots, limb removal, helmet/head hits, confirm tags, and a five-second regeneration demonstration.
+- Solo training spawns exactly one articulated soldier. Its AI strafes, reacts to aim and nearby shots, routes around obstacles, seeks cover while reloading, and changes movement with limb loss. Both player and bot have a five-second regeneration event.
+- Rifle/SMG switching, held fire, tracers, impact sparks/marks, mouse capture with fallback, and a Windows batch launcher are implemented on the feature branch. Gameplay testing of these latest changes is pending user testing.
 - Design document: "Undead Soliders.txt". Prototype is not the completed design.
 - Two-player peer-to-peer PIN duels are implemented on the multiplayer feature branch, with solo bots preserved. This is casual client-trusted networking; no relay or host migration is configured.
 - Third-person view, wall running, final art/audio, and full balancing are not complete.

@@ -4,6 +4,10 @@ A playable browser-based 3D arena combat prototype based on `Undead Soliders.txt
 
 ## Play locally
 
+On Windows, double-click **Play Undead Soldiers.bat**. It requires Node.js, starts a local-only server, and opens the browser. Keep its console window open while playing. It tries another port automatically if 8080 is already occupied.
+
+Solo practice spawns exactly one adaptive training soldier with jointed, detachable limbs. The bot strafes, dodges aim/fire threats, navigates around cover, and reloads an eight-round magazine. Its live state and ammo appear below the arena. Use **Q** or **Switch weapon** for rifle/SMG; hold left-click to fire. Shots create tracers, sparks, and short-lived marks on cover. Entering requests mouse capture; **Enable mouse** retries, and Escape releases it.
+
 For two-player play, choose **Host room**, share the displayed four-digit PIN, and have your friend choose **Join room** with that PIN. Both browsers need the same version. See [multiplayer setup and limits](docs/MULTIPLAYER.md). Use a local HTTP server (`python -m http.server 8080`) for development, then open http://localhost:8080.
 
 Open `index.html` in a modern desktop browser with WebGL enabled. Three.js is loaded from a pinned CDN and requires an internet connection.
