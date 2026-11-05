@@ -11,9 +11,9 @@
     <div class="notice" role="status" aria-live="polite">Aim for the helmet. Strip armor, then finish the exposed head.</div>
     <div class="rush" hidden><b>TOMBSTONE RUSH</b><span class="timer">5.0</span><span class="distance"></span></div>
     <div class="body-hud"><span class="limbs">ARMS ▰▰ &nbsp; LEGS ▰▰</span><span class="ammo">12 / 12</span></div>
-    <div class="cover"><span class="eyebrow">THE BODY BREAKS. THE FIGHT DOESN’T.</span><h1>Stay in the fight.</h1><p>No health bars. Break their armor, sever their limbs, finish the head.</p><button class="enter">Enter arena</button><p class="sub">Click to fire · drag to look · WASD to move</p></div>
+    <div class="cover"><span class="eyebrow">THE BODY BREAKS. THE FIGHT DOESN’T.</span><h1>Stay in the fight.</h1><p>No health bars. Break their armor, sever their limbs, finish the head.</p><button class="enter">Enter arena</button><p class="sub">Click arena to capture mouse · Move mouse to aim · Esc to release</p></div>
   </div>
-  <footer><div class="keys">WASD move · Drag aim · Click fire · Space jump · Shift sprint · C slide · R reload · E stomp</div><div class="actions"><button class="test">Try tombstone rush</button><button class="pause">Pause</button><button class="reset">Restart</button></div></footer>
+  <footer><div class="keys">WASD move · Mouse aim · Click fire · Esc cursor · Space jump · Shift sprint · C slide · R reload · E stomp</div><div class="actions"><button class="test">Try tombstone rush</button><button class="pause">Pause</button><button class="reset">Restart</button></div></footer>
   <div class="legend"><span>First-person prototype · 4 enemy soldiers</span><span class="status">Loading 3D engine…</span></div>
 </div>
 <style>
@@ -56,16 +56,36 @@ function dropTag(b){b.alive=false;b.group.visible=false;b.deadTime=elapsed+5;con
 function detach(b,name){let m=b.parts[name];if(!m||!m.visible)return;let p=new T.Vector3();m.getWorldPosition(p);let d=new T.Mesh(m.geometry,m.material);d.position.copy(p);d.rotation.set(.7,1,.9);scene.add(d);effects.push({mesh:d,life:2,v:new T.Vector3((Math.random()-.5)*3,3,(Math.random()-.5)*3)});m.visible=false;b.limbs--;if(b.limbs===0){b.tomb=5;b.aura.visible=true;b.group.position.y=-1.05;b.dest.set((Math.random()-.5)*32,0,(Math.random()-.5)*32);tell('Torso highlighted. Headshot or E at close range to finish.');}}
 function fire(){if(duel){duelFire();return;}if(!running||cooldown>0||reload>0)return;if(ammo===0){doReload();return;}ammo--;cooldown=.18;flash.intensity=4;gun.position.z=.08;ray.setFromCamera(new T.Vector2(0,0),camera);const candidates=bots.filter(b=>b.alive).flatMap(b=>Object.values(b.parts).filter(m=>m.visible));const targets=ray.intersectObjects(candidates);const walls=ray.intersectObjects(obstacles.map(o=>o.mesh));if(targets.length&&(!walls.length||targets[0].distance<walls[0].distance)){let {bot:b,part}=targets[0].object.userData;$('.hitmark').textContent='×';setTimeout(()=>$('.hitmark').textContent='',100);if(part==='helmet'||part==='head'){if(b.armored){b.armored=false;b.parts.helmet.visible=false;tell('Helmet broken. One exposed headshot will finish.');}else dropTag(b);}else if(part==='body'){let names=['leftArm','rightArm','leftLeg','rightLeg'].filter(n=>b.parts[n].visible);if(names.length)detach(b,names[0]);else tell('Torso exposed. Aim for the head.');}else detach(b,part);}hud();}
 function doReload(){if(ammo<12&&reload===0){reload=1.2;hud();}}
-function end(msg){if(duel){room.send({type:'eliminated',life,x:player.x,z:player.z});}running=false;$('.cover').hidden=false;$('.cover h1').textContent=msg;$('.cover p').textContent='Your confirm tags: '+score+'. Enter again for a fresh run.';$('.enter').textContent='Respawn';started=false;}
+function end(msg){releaseMouse();if(duel){room.send({type:'eliminated',life,x:player.x,z:player.z});}running=false;$('.cover').hidden=false;$('.cover h1').textContent=msg;$('.cover p').textContent='Your confirm tags: '+score+'. Enter again for a fresh run.';$('.enter').textContent='Respawn';started=false;}
 function createRush(){arms=0;legs=0;rush=5;if(relic)scene.remove(relic);relic=new T.Group();let forward=new T.Vector3(-Math.sin(yaw),0,-Math.cos(yaw));let chosen=player.clone();for(let step=7;step>=2;step-=.5){let p=player.clone().addScaledVector(forward,step);if(walkable(p.x,p.z)){chosen=p;break;}}relic.position.copy(chosen);box(.85,1.3,.3,mats.glow,0,.65,0,relic);box(1.35,.2,.3,mats.glow,0,.95,0,relic);let light=new T.PointLight(0xbbff88,2,10);light.position.y=1.5;relic.add(light);scene.add(relic);tell('REGENERATE: reach the green tombstone before the timer expires.');hud();}
 function damage(){if(rush>0)return;if(arms>0){arms--;tell('Arm severed. Mobility boosted.');}else if(legs>0){legs--;tell('Leg severed. Movement impaired.');}if(arms+legs===0)createRush();hud();}
 function reset(){life++;helmet=true;Object.keys(localParts).forEach(k=>localParts[k]=true);if(duel){player.set(room.role==='host'?-3:3,0,11);groundY=velocity=0;arms=legs=2;rush=0;ammo=12;reload=0;cooldown=0;if(relic){scene.remove(relic);relic=null;}hud();return;}score=0;arms=legs=2;rush=0;ammo=12;reload=0;cooldown=0;groundY=velocity=0;player.set(0,0,11);yaw=pitch=0;if(relic){scene.remove(relic);relic=null;}tags.splice(0).forEach(t=>scene.remove(t));bots.forEach(spawn);hud();}
 $('.enter').onclick=()=>{if(!started){reset();started=true;}running=true;$('.cover').hidden=true;$('.pause').textContent='Pause';root.focus();};
-$('.pause').onclick=()=>{if(!started)return;running=!running;$('.pause').textContent=running?'Pause':'Resume';tell(running?'Combat resumed.':'Paused. Click Resume to continue.');};
+$('.pause').onclick=()=>{if(!started)return;running=!running;if(!running)releaseMouse();$('.pause').textContent=running?'Pause':'Resume';tell(running?'Combat resumed.':'Paused. Click Resume to continue.');};
 $('.reset').onclick=()=>{reset();started=true;running=true;$('.cover').hidden=true;$('.pause').textContent='Pause';};
 $('.test').onclick=()=>{if(duel)return;if(!started){reset();started=true;}running=true;$('.cover').hidden=true;createRush();};
-const arena=$('.arena');arena.addEventListener('pointerdown',e=>{if(e.target.closest('button')||!running)return;drag={x:e.clientX,y:e.clientY,startX:e.clientX,startY:e.clientY,moved:false};arena.setPointerCapture(e.pointerId);});arena.addEventListener('pointermove',e=>{if(!drag||!running)return;let dx=e.clientX-drag.x,dy=e.clientY-drag.y;yaw-=dx*.005;pitch=Math.max(-1.2,Math.min(1.2,pitch-dy*.005));drag.x=e.clientX;drag.y=e.clientY;if(Math.hypot(e.clientX-drag.startX,e.clientY-drag.startY)>4)drag.moved=true;});arena.addEventListener('pointerup',()=>{if(drag&&!drag.moved)fire();drag=null;});arena.addEventListener('pointercancel',()=>drag=null);
-document.addEventListener('keydown',e=>{if(e.target.closest('input,button,textarea'))return;if(!root.matches(':hover')&&!root.contains(document.activeElement))return;if(['Space','KeyW','KeyA','KeyS','KeyD'].includes(e.code))e.preventDefault();keys[e.code]=true;if(!running)return;if(e.code==='KeyR')doReload();if(e.code==='Space'&&groundY===0&&legs>0)velocity=7;if(e.code==='KeyC'&&legs===2)slideTime=.7;if(e.code==='KeyE'){if(duel){duelFire(true);return;}let target=bots.find(b=>b.alive&&b.limbs===0&&b.group.position.distanceTo(player)<2.4);if(target)dropTag(target);}});document.addEventListener('keyup',e=>keys[e.code]=false);window.addEventListener('blur',()=>{Object.keys(keys).forEach(k=>keys[k]=false);});
+const arena=$('.arena');let dragFallback=false,lockPending=false;
+function look(dx,dy){yaw-=dx*.005;pitch=Math.max(-1.2,Math.min(1.2,pitch-dy*.005));}
+function releaseMouse(){if(document.pointerLockElement===arena)document.exitPointerLock();drag=null;Object.keys(keys).forEach(k=>keys[k]=false);}
+function mouseFallback(){lockPending=false;dragFallback=true;$('.status').textContent='Mouse capture unavailable here · drag to aim';}
+arena.addEventListener('pointerdown',e=>{
+  if(e.button!==0||e.target.closest('button')||!running)return;
+  if(document.pointerLockElement===arena){fire();return;}
+  if(e.pointerType==='mouse'&&!dragFallback&&arena.requestPointerLock){
+    if(lockPending)return;lockPending=true;
+    try{const request=arena.requestPointerLock();if(request?.catch)request.catch(mouseFallback);}catch{mouseFallback();}
+    return;
+  }
+  drag={x:e.clientX,y:e.clientY,startX:e.clientX,startY:e.clientY,moved:false};arena.setPointerCapture(e.pointerId);
+});
+arena.addEventListener('pointermove',e=>{if(document.pointerLockElement===arena||!drag||!running)return;look(e.clientX-drag.x,e.clientY-drag.y);drag.x=e.clientX;drag.y=e.clientY;if(Math.hypot(e.clientX-drag.startX,e.clientY-drag.startY)>4)drag.moved=true;});
+arena.addEventListener('pointerup',()=>{if(drag&&!drag.moved)fire();drag=null;});
+arena.addEventListener('pointercancel',()=>drag=null);
+document.addEventListener('mousemove',e=>{if(document.pointerLockElement===arena&&running)look(e.movementX,e.movementY);});
+document.addEventListener('pointerlockchange',()=>{lockPending=false;drag=null;Object.keys(keys).forEach(k=>keys[k]=false);$('.status').textContent=document.pointerLockElement===arena?'Mouse captured · Esc releases cursor':'Click arena to capture mouse · Esc releases cursor';});
+document.addEventListener('pointerlockerror',mouseFallback);
+window.addEventListener('blur',releaseMouse);
+document.addEventListener('keydown',e=>{if(e.code==='Escape'){releaseMouse();return;}if(document.pointerLockElement!==arena&&e.target.closest('input,button,textarea'))return;if(document.pointerLockElement!==arena&&!root.matches(':hover')&&!root.contains(document.activeElement))return;if(['Space','KeyW','KeyA','KeyS','KeyD'].includes(e.code))e.preventDefault();keys[e.code]=true;if(!running)return;if(e.code==='KeyR')doReload();if(e.code==='Space'&&groundY===0&&legs>0)velocity=7;if(e.code==='KeyC'&&legs===2)slideTime=.7;if(e.code==='KeyE'){if(duel){duelFire(true);return;}let target=bots.find(b=>b.alive&&b.limbs===0&&b.group.position.distanceTo(player)<2.4);if(target)dropTag(target);}});document.addEventListener('keyup',e=>keys[e.code]=false);window.addEventListener('blur',()=>{Object.keys(keys).forEach(k=>keys[k]=false);});
 const resize=new ResizeObserver(()=>{let w=arena.clientWidth,h=arena.clientHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();});resize.observe(arena);
 function frame(now){if(!root.isConnected){renderer.dispose();resize.disconnect();return;}requestAnimationFrame(frame);let dt=Math.min((now-last)/1000,.045);last=now;if(running){elapsed+=dt;cooldown=Math.max(0,cooldown-dt);if(reload>0){reload-=dt;if(reload<=0){reload=0;ammo=12;hud();}}slideTime=Math.max(0,slideTime-dt);let low=arms+legs===0,speed=low?9.8:legs===0?1.05:legs===1?2.8:7*(arms===0?1.3:arms===1?1.1:1);if(keys.ShiftLeft&&legs===2)speed*=1.5;if(slideTime>0)speed*=1.5;let f=(keys.KeyW?1:0)-(keys.KeyS?1:0),s=(keys.KeyD?1:0)-(keys.KeyA?1:0);let length=Math.hypot(f,s)||1;let dx=(-Math.sin(yaw)*f+Math.cos(yaw)*s)/length*speed*dt,dz=(-Math.cos(yaw)*f-Math.sin(yaw)*s)/length*speed*dt;if(walkable(player.x+dx,player.z,groundY))player.x+=dx;if(walkable(player.x,player.z+dz,groundY))player.z+=dz;velocity-=19*dt;groundY=Math.max(0,groundY+velocity*dt);if(groundY===0)velocity=0;
 if(rush>0){rush-=dt;$('.timer').textContent=Math.max(0,rush).toFixed(1);$('.distance').textContent=Math.round(player.distanceTo(relic.position))+' m to green relic';if(player.distanceTo(relic.position)<1.35){arms=legs=2;rush=0;scene.remove(relic);relic=null;tell('STRUCTURE RESTORED. Back in the fight.');hud();}else if(rush<=0)end('Tombstone missed.');}
@@ -90,7 +110,7 @@ function roomStatus(state,message){
     $('.legend > span').textContent='Two-player duel · local pause does not pause your opponent';
     room.send(statePacket());tell('Friend connected. Break the helmet, then finish the head.');
   }else if((state==='idle'||state==='error')&&duel){
-    duel=false;if(remote){scene.remove(remote.group);remote=null;}reset();started=false;running=false;
+    releaseMouse();duel=false;if(remote){scene.remove(remote.group);remote=null;}reset();started=false;running=false;
     $('.cover').hidden=false;$('.cover h1').textContent='Back to solo.';$('.enter').textContent='Enter arena';$('.test').disabled=false;
     $('.build').textContent='SOLO PRACTICE / PIN DUEL';$('.legend > span').textContent='First-person prototype · 4 enemy soldiers';
   }
@@ -133,7 +153,7 @@ function duelFire(stomp=false){
   if(hit&&(!wall||hit.distance<wall.distance)){room.send({type:'hit',part:hit.object.userData.part,life:remoteLife,id:++shotId});$('.hitmark').textContent='×';setTimeout(()=>$('.hitmark').textContent='',100);}
   hud();
 }
-hud();$('.status').textContent='Ready · drag aiming works inside the preview';requestAnimationFrame(frame);
+hud();$('.status').textContent='Click arena to capture mouse · Esc releases cursor';requestAnimationFrame(frame);
 })();
 </script>
 </body></html>
