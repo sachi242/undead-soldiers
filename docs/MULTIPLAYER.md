@@ -12,6 +12,8 @@ This feature adds a two-player peer-to-peer duel. Four digits refers to the room
 
 Pause is local and does not protect you from incoming hits. The tombstone demo button is disabled during a duel. Use desktop keyboard/mouse controls; touch movement is not implemented.
 
+Click **Enter arena** to request mouse capture. **Enable mouse** retries capture, and Escape releases it. If the browser blocks capture, mouse-over aiming is enabled inside the arena (the cursor can still reach its edges). Turn off browser annotation mode so clicks reach the game. Hold the left mouse button for repeated shots with visible tracers; remote shots also show tracers. Gameplay verification of these latest input/tracer changes is left to the player.
+
 ## Preview locally
 From the repository root with Python installed:
 
