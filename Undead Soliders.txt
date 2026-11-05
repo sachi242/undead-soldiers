@@ -1,0 +1,83 @@
+Title: Undead Soldiers
+
+Genre: Fast-Paced First/Third-Person Arena Fighter / Dismemberment Shooter
+
+Core Loop: High-speed parkour combat where players do not have standard health bars. Kills require a precise direct strike to an exposed head, while all intermediate weapon fire systematically strips body armor, severs limbs, and degrades mobility without stopping the combat flow.
+
+Game Mechanics & Execution Loop
+System	Mechanic	Gameplay Impact
+Limbless Movement	Worm Crawling (Torso Wiggle)	Allows players with zero arms and zero legs to slide and wriggle across surfaces at an increased speed.
+Emergency Regeneration	5-Second Tombstone Rush	A random tombstone spawns on the map when fully dismembered. Reaching it within 5 seconds fully restores all body parts; missing the window results in instant death.
+Hunter Highlighting	Red Outline on Torsos	Opponents stripped down to just a torso are highlighted with a bright red aura through walls, making them easy prey for finishing moves.
+Execution Mechanics	Head Stomp / Finishers	Standing over a limbless torso allows for a direct headshot or a close-quarters head stomp execution to secure the kill tag.
+1. Limbless Traversal & The Tombstone Event
+                    [ PLAYER LOSES ALL LIMBS ]
+                                │
+        ┌───────────────────────┴───────────────────────┐
+        ▼                                               ▼
+[ WORM CRAWL ACTIVE ]                        [ TOMBSTONE SPAWNS ]
+├─ Wriggle Locomotion                        ├─ Random Map Position Marked
+├─ +40% Speed (Mass Loss)                    ├─ 5-Second Countdown Begins
+└─ Low Ground Profile                        └─ Ping Visible on HUD
+        │                                               │
+        └───────────────────────┬───────────────────────┘
+                                │
+               ┌────────────────┴────────────────┐
+               ▼                                 ▼
+    [ REACHES TOMBSTONE ]             [ TIMER EXPIRES (5s) ]
+               │                                 │
+               ▼                                 ▼
+      [ FULL BODY HEAL ]                 [ FATAL COLLAPSE ]
+  (All limbs restored instantly)        (Eliminated / Drops Tag)
+Worm Crawling (Torso Wiggle)
+When all four limbs are severed, the character drops directly to the chest and uses core momentum to wriggle forward.
+
+Speed & Profile: Because all skeletal mass from the arms and legs is removed, the torso's ground speed increases dramatically (
++40% over standard crawl), allowing the player to rapidly slide toward objectives or cover.
+
+Low Profile: The player's camera drops to carpet level, making them nearly impossible to hit with high-angle gunfire from afar, though they remain vulnerable to vertical drops and area explosives.
+
+5-Second Tombstone Event
+Spawn Trigger: The instant a player's fourth limb is severed, a glowing Relic Tombstone randomly spawns somewhere on the map terrain within a reachable radius.
+
+The Countdown: A 5-second timer starts immediately.
+
+Success: Reaching and touching the Tombstone within the 5-second window triggers a full structural regeneration—instantly rebuilding all limbs, restoring body armor, and standing the player back up.
+
+Failure: If the 5-second timer runs out before reaching the Tombstone, the torso suffers a fatal collapse, eliminating the player instantly and dropping their confirm tag on the spot.
+
+2. Hunter System & Head Stomp Executions
+                       [ OPPONENT REDUCED TO TORSO ]
+                                     │
+                                     ▼
+                      [ TORSO HIGHLIGHT ACTIVE ]
+                      ├─ Thermal Red Aura Through Geometry
+                      └─ Global Marker for All Enemies
+                                     │
+                 ┌───────────────────┴───────────────────┐
+                 ▼                                       ▼
+        [ FINISH AT RANGE ]                     [ CLOSE-QUARTERS APPROACH ]
+                 │                                       │
+                 ▼                                       ▼
+       [ SINGLE HEADSHOT ]                       [ HEAD STOMP PROMPT ]
+  (Ranged Weapon Elimination)               (Melee / Environmental Crush)
+Red Outline Highlighting
+Tactical Tracking: When an enemy is reduced to just a torso (whether in a prone crawl or worm crawl), they are marked with a bright red aura visible to all opposing players, even through walls and obstacles.
+
+Gameplay Dynamics: This creates an intense dual-sided race: the limbless player is scrambling to reach the Tombstone before the 5-second timer expires, while nearby enemies use the red aura to hunt them down before they can regenerate.
+
+Finishing Moves
+To close out the kill on a highlighted torso, players have two direct execution choices:
+
+Ranged Headshot: Fire a single round into the exposed skull using any active weapon mount.
+
+Head Stomp (Melee Finisher): Sprint or wall-jump directly on top of the limbless torso and press the Melee input. This triggers a brief head-stomp animation, crushing the target's helmet/skull instantly and spawning the score tag directly underfoot.
+
+3. Complete Locomotion & State Matrix
+Limb Condition	Locomotion Mode	Speed Modifier	Special Capabilities	Highlighting Status
+4 Limbs Intact	Sprint / Wall Run / Slide	100% Base Speed	ADS Precision, Full Parkour	Normal Mesh
+1 Arm Severed	Off-Hand Handling	+10% Speed	Increased Recoil, Standard Parkour	Normal Mesh
+2 Arms Severed	Mouth/Foot Rig Firing	+30% Speed	Extended Wall Run (3.4s), Slide Cancel Buff	Normal Mesh
+1 Leg Severed	Single-Leg Hopping	−60% Speed	Short Capped Wall Runs (1.2s)	Normal Mesh
+2 Legs Severed	Arm Drag Prone Crawl	−85% Speed	Low Profile, Drag Weapons	Normal Mesh
+4 Limbs Severed	Worm Crawling (Torso)	+40% Mass Buff	5s Tombstone Rush, Extreme Low Profile	Highlighted Red Aura
